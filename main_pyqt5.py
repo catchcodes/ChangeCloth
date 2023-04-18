@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import *
 import numpy as np
 import cv2
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QIcon
 
 
 # 读取中文路径
@@ -20,7 +21,8 @@ class mwindow(QWidget):
         super(mwindow, self).__init__()
         self.setupUi(self)
         self.setAcceptDrops(True)
-        # 图片
+        # 窗口Icon
+        # self.setWindowIcon(QIcon(r""))
         self.img = None
         self.imghsv = None
         self.aimg = None
@@ -31,22 +33,20 @@ class mwindow(QWidget):
         Dialog.setEnabled(True)
         Dialog.resize(800, 600)
         Dialog.setMinimumSize(QtCore.QSize(800, 600))
+
         self.label = QtWidgets.QLabel(Dialog)
         self.label.setGeometry(QtCore.QRect(0, 20, 800, 600))
-        self.label.setAcceptDrops(False)
-        self.label.setScaledContents(False)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
 
         self.label2 = QtWidgets.QLabel(Dialog)
-        self.label2.setGeometry(QtCore.QRect(900, 20, 800, 600))
-        self.label.setAcceptDrops(False)
-        self.label.setScaledContents(False)
-        self.label.setAlignment(QtCore.Qt.AlignCenter)
-        self.label.setObjectName("label2")
+        self.label2.setGeometry(QtCore.QRect(800, 20, 800, 600))
+        self.label2.setAlignment(QtCore.Qt.AlignCenter)
+        self.label2.setObjectName("label2")
 
         self.retranslateUi(Dialog)
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
+        # 根据objectName和signal自动绑定slot
+        # QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
@@ -79,8 +79,6 @@ class mwindow(QWidget):
             self.label.setPixmap(
                 QPixmap.fromImage(qimg).scaled(self.label.width(), self.label.height(), Qt.KeepAspectRatio))
 
-    # def dragMoveEvent(self, evn):
-    #     pass
 
     def mousePressEvent(self, event: QtGui.QMouseEvent) -> None:
         pos = event.pos()
@@ -93,8 +91,7 @@ class mwindow(QWidget):
         self.setToolTip(tips)
 
     def showImg(self):
-        print(self.HSV)
-        # HSV 的下界限
+        # HSV 的下界限  pyqt5的h分量为0-360，opencv2的h分量为0-180
         lower = np.array([self.HSV[0]/2 - 8, 50, 50])
         # HSV 的上界限
         upper = np.array([self.HSV[0]/2 + 8, 255, 255])
